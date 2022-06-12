@@ -1,0 +1,54 @@
+# Copyright 2022 Cisco Systems, Inc. and its affiliates
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+---
+imageName: flame
+servicename: flame
+componentPorts:
+  apiserver: "10100"
+  notifier: "10101"
+  controller: "10102"
+  agent: "10103"
+replicas: 1
+
+mongodb:
+  global:
+    namespaceOverride: flame
+  architecture: replicaset
+  auth:
+    enabled: false
+
+  # Uncomment the following block after the 1st installation of flame helm chart.
+  # The block allows access to database outside the k8s cluster.
+  # Enable externalAccess config only for debugging purposes by using tools like Robo 3T.
+  #######
+  # externalAccess:
+  #   enabled: true
+  #   service:
+  #     type: LoadBalancer
+  #   autoDiscovery:
+  #     enabled: true
+  # rbac:
+  #   create: true
+  #######
+
+broker:
+  sort: mqtt
+  host: mosquitto.flame.svc.cluster.local
+
+registry:
+  sort: mlflow
+  uri: http://mlflow.flame.svc.cluster.local:5000
